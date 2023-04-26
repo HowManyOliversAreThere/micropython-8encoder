@@ -1,7 +1,8 @@
 from machine import I2C
 import struct
 
-class M5_8encoder():
+
+class M5_8Encoder:
     ENCODERS = const(8)
     LEDS = const(9)
 
@@ -22,7 +23,9 @@ class M5_8encoder():
 
     def read_counter(self, counter: int):
         if not (0 <= counter < self.ENCODERS):
-            raise ValueError(f"Invalid counter number {counter} (valid values: 0-{self.ENCODERS - 1}")
+            raise ValueError(
+                f"Invalid counter number {counter} (valid values: 0-{self.ENCODERS - 1})"
+            )
 
         val = self._read(4 * counter, 4)
         return struct.unpack("<i", val)[0]
@@ -32,7 +35,9 @@ class M5_8encoder():
 
     def read_increment(self, counter: int):
         if not (0 <= counter < self.ENCODERS):
-            raise ValueError(f"Invalid increment number {counter} (valid values: 0-{self.ENCODERS - 1}")
+            raise ValueError(
+                f"Invalid increment number {counter} (valid values: 0-{self.ENCODERS - 1})"
+            )
 
         val = self._read(0x20 + 4 * counter, 4)
         return struct.unpack("<i", val)[0]
@@ -43,12 +48,12 @@ class M5_8encoder():
     def set_led(self, led: int, color: bytes):
         if not (0 <= led < self.ENCODERS):
             raise ValueError(
-                f"Invalid led number {led} (valid values: 0-{self.LEDS - 1}"
+                f"Invalid led number {led} (valid values: 0-{self.LEDS - 1})"
             )
 
         if len(color) != 3:
             raise ValueError(
-                f"Colour must be a bytearray of lenth 3 (not {len(color)}"
+                f"Colour must be a bytearray of lenth 3 (not {len(color)})"
             )
 
         self._write(0x70 + 3 * led, color)
