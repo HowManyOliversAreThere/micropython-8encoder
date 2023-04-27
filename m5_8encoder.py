@@ -33,6 +33,17 @@ class M5_8Encoder:
     def read_all_counters(self):
         return [self.read_counter(i) for i in range(self.ENCODERS)]
 
+    def reset_counter(self, counter: int):
+        if not (0 <= counter < self.ENCODERS):
+            raise ValueError(
+                f"Invalid counter number {counter} (valid values: 0-{self.ENCODERS - 1})"
+            )
+
+        self._write(0x40 + counter, bytes([0xFF]))
+
+    def reset_all_counters(self):
+        self._write(0x40, bytes([0xFF] * self.ENCODERS))
+
     def read_increment(self, counter: int):
         if not (0 <= counter < self.ENCODERS):
             raise ValueError(
@@ -44,6 +55,22 @@ class M5_8Encoder:
 
     def read_all_increments(self):
         return [self.read_increment(i) for i in range(self.ENCODERS)]
+
+    def read_button(self, button: int):
+        if not (0 <= button < self.ENCODERS):
+            raise ValueError(
+                f"Invalid button number {button} (valid values: 0-{self.ENCODERS - 1})"
+            )
+
+        val = self._read(0x50 + button, 1)
+        return struct.unpack("B", val)[0]
+
+    def read_all_buttons(self):
+        return [self.read_button(idx) for idx in range(self.ENCODERS)]
+
+    def read_switch(self):
+        val = self._read(0x60, 1)
+        return struct.unpack("B", val)[0]
 
     def set_led(self, led: int, color: bytes):
         if not (0 <= led < self.ENCODERS):
@@ -57,3 +84,7 @@ class M5_8Encoder:
             )
 
         self._write(0x70 + 3 * led, color)
+
+    def firmware_version(self):
+        val = self._read(0xFE, 1)
+        return struct.unpack("B", val)[0]
