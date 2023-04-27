@@ -1,0 +1,10 @@
+{
+    "urls": [
+        [
+            "m5_8encoder.py",
+            "github:HowManyOliversAreThere/micropython-8encoder/m5_8encoder.py"
+        ]
+    ],
+    "deps": [],
+    "version": "0.1"
+}
